@@ -151,6 +151,71 @@ const statusStyles: Record<string, string> = {
   Done: "bg-success/10 text-success",
 };
 
+interface ReportItem {
+  id: string;
+  title: string;
+  summary: string;
+  sources: string[];
+}
+
+const reportsData: ReportItem[] = [
+  {
+    id: "rep-1",
+    title: "Global Autonomous Fleet Electrification: 2026–2030 Projections",
+    summary:
+      "Commercial fleet electrification has reached a tipping point across Tier-1 logistics providers, driven by battery density improvements exceeding 340 Wh/kg and favorable total-cost-of-ownership inflection curves across heavy-duty transit corridors.",
+    sources: [
+      "BloombergNEF Fleet Tracker",
+      "IEA Clean Energy Outlook",
+      "Northwind Logistics Dataset",
+    ],
+  },
+  {
+    id: "rep-2",
+    title: "Semiconductor Foundry Margins & Advanced Packaging Bottlenecks",
+    summary:
+      "Sub-2nm wafer fabrication capacity remains constrained through Q3 2026. High-bandwidth memory (HBM4) integration challenges are prompting enterprise chip designers to adopt modular chiplet interconnect standards to mitigate yield loss.",
+    sources: [
+      "TSMC Quarterly Disclosures",
+      "Semiconductor Industry Association",
+      "Gartner Advanced Packaging",
+    ],
+  },
+  {
+    id: "rep-3",
+    title: "Enterprise AI Agents in Financial Advisory: Compliance & Latency Benchmarks",
+    summary:
+      "Benchmark evaluation across 14 multi-agent architectures reveals that localized small-model guardrails decrease decision latency by 68% while preserving strict SEC Rule 206(4)-7 adherence for automated client portfolio adjustments.",
+    sources: [
+      "Financial Conduct Authority (FCA)",
+      "Stanford AI Index 2026",
+      "Northwind Benchmark Lab",
+    ],
+  },
+  {
+    id: "rep-4",
+    title: "Renewable Grid Storage Integration & LFP Cell Cost Curve Analysis",
+    summary:
+      "Utility-scale grid storage installations surpassed 180 GWh globally this quarter. Falling upstream lithium carbonate pricing combined with sodium-ion commercial pilots has reduced battery energy storage systems levelized cost to $78/MWh.",
+    sources: [
+      "US Department of Energy",
+      "Wood Mackenzie Power Index",
+      "S&P Global Commodity Insights",
+    ],
+  },
+  {
+    id: "rep-5",
+    title: "Biopharma Clinical Trial Optimization: Generative Molecule Screening",
+    summary:
+      "Phase II oncology clinical trial durations have contracted by an average of 4.2 months for cohorts leveraging generative diffusion models for target binding verification, substantially reducing multi-million dollar clinical attrition rates.",
+    sources: [
+      "Nature Biotechnology",
+      "FDA Novel Drug Approvals",
+      "ClinicalTrials.gov Data Feed",
+    ],
+  },
+];
+
 /* ---------- Page ---------- */
 
 function Index() {
@@ -176,6 +241,7 @@ function Index() {
           onToggleFavorite={toggleFavorite}
         />
         <AgentsSection />
+        <ReportsSection />
       </main>
       <ChatButton />
       <Toaster />
@@ -783,7 +849,7 @@ function AgentsSection() {
   };
 
   return (
-    <section id="agents" className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 xl:px-0 pt-4 pb-16 sm:pt-6 sm:pb-20">
+    <section id="agents" className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 xl:px-0 py-6 sm:py-8">
       <div className="rounded-[2rem] bg-panel p-5 sm:p-6 md:p-8 border border-white/70 dark:border-zinc-800 shadow-sm">
         {/* Section Header */}
         <Reveal>
@@ -944,6 +1010,90 @@ function AgentsSection() {
       </div>
     </div>
   </section>
+  );
+}
+
+/* ---------- Reports Section — 1320px Box with 5 Stacked Report Cards ---------- */
+
+function ReportsSection() {
+  const handleOpenReport = (title: string) => {
+    toast.success(`Opening report: "${title}"`, {
+      description: "Loading full synthesis and citations...",
+      duration: 3000,
+    });
+  };
+
+  const handleDownloadPdf = (title: string) => {
+    toast.success(`Exporting "${title}"`, {
+      description: "Generating authenticated PDF document...",
+      duration: 3000,
+    });
+  };
+
+  return (
+    <section
+      id="reports"
+      className="mx-auto w-full max-w-[1320px] px-4 sm:px-6 xl:px-0 pt-4 pb-16 sm:pt-6 sm:pb-20"
+    >
+      <div className="rounded-[2rem] bg-panel p-5 sm:p-6 md:p-8 border border-white/70 dark:border-zinc-800 shadow-sm">
+        {/* Section Header */}
+        <Reveal>
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 className="font-display text-[32px] sm:text-[36px] font-medium tracking-tight text-zinc-950 leading-tight dark:text-white">
+                Reports
+              </h2>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* 5 Stacked Report Cards */}
+        <div className="flex flex-col gap-4 sm:gap-5">
+          {reportsData.map((report, index) => (
+            <Reveal key={report.id} delay={index * 50}>
+              <article className="group relative rounded-[1.75rem] border border-border/60 bg-white p-6 sm:p-7 text-zinc-950 shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md dark:bg-card dark:text-white">
+                {/* Heading: brand blue theme gradient left to right */}
+                <div className="flex items-start justify-between gap-4">
+                  <h3
+                    onClick={() => handleOpenReport(report.title)}
+                    className="hero-text-gradient font-display text-xl sm:text-[22px] font-medium tracking-tight leading-snug cursor-pointer transition-opacity hover:opacity-85"
+                  >
+                    {report.title}
+                  </h3>
+                  <button
+                    onClick={() => handleOpenReport(report.title)}
+                    aria-label={`Open ${report.title}`}
+                    className="shrink-0 p-1 text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors cursor-pointer"
+                  >
+                    <ArrowUpRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </button>
+                </div>
+
+                {/* Paragraph */}
+                <p className="mt-2.5 text-sm font-normal text-zinc-600 dark:text-zinc-300 leading-relaxed max-w-4xl">
+                  {report.summary}
+                </p>
+
+                {/* Sources Row — clean pills without icons, minimum 14px (text-sm) */}
+                <div className="mt-4 pt-3.5 border-t border-zinc-100 dark:border-zinc-800/80 flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-mono font-medium text-zinc-500 dark:text-zinc-400 mr-1">
+                    Sources:
+                  </span>
+                  {report.sources.map((src) => (
+                    <span
+                      key={src}
+                      className="inline-flex items-center rounded-md bg-zinc-100/90 dark:bg-zinc-800/90 px-3 py-1 text-sm font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50"
+                    >
+                      {src}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
